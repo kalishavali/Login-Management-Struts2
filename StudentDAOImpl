@@ -1,0 +1,38 @@
+import java.io.File;
+import java.util.ArrayList;
+
+
+public class StudentDAOImpl implements StudentDAO{
+
+	@Override
+	public ArrayList getDetails() {
+		ArrayList<String> list=new ArrayList<String>();
+		list.add("kalishavali");
+		list.add("shaik");
+		return list;
+	}
+
+	@Override
+	public String printDetails() {
+		// TODO Auto-generated method stub
+			return "hello_1";
+	}
+	public ArrayList<ArrayList<String>> getCrawler(File f){
+		ArrayList<ArrayList<String>> crawler=new ArrayList<ArrayList<String>>();
+		ArrayList<String> dir=new ArrayList<String>();
+		ArrayList<String> files=new ArrayList<String>();
+		String name = "D:\\Testing\\";
+		f = new File(name);
+		if (!f.isDirectory()) {
+			 files.add(f.getPath());
+		 }
+		 else{
+			 dir.add(f.getName());
+			 for (File subF : f.listFiles()) {
+				 	getCrawler(subF);
+			 }
+		 }
+		return crawler;
+	}
+
+}
