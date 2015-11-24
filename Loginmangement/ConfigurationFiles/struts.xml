@@ -1,0 +1,20 @@
+<!DOCTYPE struts PUBLIC
+"-//Apache Software Foundation//DTD Struts Configuration 2.0//EN"
+"http://struts.apache.org/dtds/struts-2.0.dtd">
+
+<struts>
+    <!-- Configuration for the default package. -->
+    <package name="default" extends="struts-default">
+        <action name="index" class="Controller.AccountController">
+            <result name="login">/login.jsp</result>
+            <result name="success">/welcome.jsp</result>
+        </action>
+        <action name="login" class="Controller.AccountController" method="login">
+            <result name="login">/login.jsp</result>
+            <result name="success">/welcome.jsp</result>
+        </action>
+        <action name="logout" class="Controller.AccountController" method="logout">
+            <result name="success">/login.jsp</result>
+        </action>
+    </package>
+</struts>
