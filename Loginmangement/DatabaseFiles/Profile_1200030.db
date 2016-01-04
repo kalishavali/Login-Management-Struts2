@@ -1,0 +1,13 @@
+CREATE TABLE Profile_1200030(
+username varchar2(50) NULL,
+about varchar2(50) NULL,
+dateofbirth varchar2(50) null,
+phone number(12) null,
+address varchar2(500) null,
+designation varchar2(150) null,
+email varchar2(45) null,
+password varchar2(40) null,
+name varchar2(45) null,
+gender varchar2(40) null,
+token varchar2(100) null
+);
