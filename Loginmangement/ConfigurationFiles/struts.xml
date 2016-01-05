@@ -1,17 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE struts PUBLIC
-"-//Apache Software Foundation//DTD Struts Configuration 2.0//EN"
-"http://struts.apache.org/dtds/struts-2.0.dtd">
+    "-//Apache Software Foundation//DTD Struts Configuration 2.0//EN"
+    "/WEB-INF/classes/struts-2.1.7.dtd">
 
 <struts>
-    <!-- Configuration for the default package. -->
-    <package name="default" extends="struts-default">
-        <action name="login" class="simple.AuthenticationAction" method="login">
-            <result name="success">/welcome.jsp</result>
-            <result name="input">/login.jsp</result>
+
+    <constant name="struts.devMode" value="true" />
+    <constant name="struts.multipart.maxSize" value="1000000" />
+
+    <package name="basicstruts2" extends="struts-default" namespace="/">
+
+        <!--
+        If no class attribute is specified the framework will assume success and
+        render the result index.jsp
+        If no name value for the result node is specified the success value is the default
+        -->
+        <action name="index">
+            <result>/index.jsp</result>
         </action>
- 
-        <action name="logout" class="simple.AuthenticationAction" method="logout">
-            <result name="success">/login.jsp</result>
+
+        <action name="">
+            <result>/index.jsp</result>
         </action>
+		
+        <!--
+        If the URL is hello.action the call the execute method of class HelloWorldAction.
+        If the result returned by the execute method is success render the HelloWorld.jsp
+        -->
+        <action name="login" class="authentication.AuthenticationAction" method="login">
+			<result name="success">/welcome.jsp</result>
+			<result name="input">/index.jsp</result>
+		</action>
+		<action name="logout" class="authentication.AuthenticationAction" method="logout">
+			<result name="success">/index.jsp</result>
+		</action>
+		<action name="register" class="authentication.AuthenticationAction" method="register">
+			<result name="success">/welcome.jsp</result>
+			<result name="input">/register.jsp</result>
+		</action>
+		<action name="profile" class="authentication.AuthenticationAction" method="profile">
+            <result name="success">/profile.jsp</result>
+             <result name="input">/index.jsp</result>
+        </action>
+        <action name="changePassword" class="authentication.AuthenticationAction" method="changePassword">
+            <result name="success">/success.jsp</result>
+            <result name="input">/changePassword.jsp</result>
+        </action>
+        <action name="forgotPassword" class="authentication.AuthenticationAction" method="forgotPassword">
+            <result name="success">/success.jsp</result>
+            <result name="input">/forgotPassword.jsp</result>
+        </action>
+        <action name="resetPassword" class="authentication.AuthenticationAction" method="resetPassword">
+            <result name="success">/success.jsp</result>
+            <result name="input">/resetPassword.jsp</result>
+        </action>
+        <action name="editProfile" class="authentication.AuthenticationAction" method="editProfile">
+            <result name="success">/success.jsp</result>
+            <result name="input">/editProfile.jsp</result>
+            <result name="login">/index.jsp</result>
+        </action>
+        
+
     </package>
+
 </struts>
