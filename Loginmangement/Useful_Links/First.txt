@@ -7,3 +7,8 @@ https://struts.apache.org/docs/why-do-the-form-tags-put-table-tags-around-contro
 http://stackoverflow.com/questions/5752477/problem-with-html-tags-in-struts2-while-displaying
 http://stackoverflow.com/search?q=struts2&wb48617274=8D4DBADF
 http://www.mkyong.com/struts2/struts-2-a-tag-example/?wb48617274=0DB5A6AA
+
+
+
+<!------- Image-----------------!>
+http://www.mkyong.com/struts2/struts-2-dynamic-image-example/
