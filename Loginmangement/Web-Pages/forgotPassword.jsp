@@ -1,31 +1,29 @@
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@taglib prefix="s" uri="/struts-tags" %>
-<%@include file="includes/Header.html" %>
+<%@include file="includes/Header.jsp" %>
 
-<div class="ui segment">
-<!-- Body Start-->
 
-    <div class="ui horizontal divider" id="center_login">Forgot Password</div>
+<!-- ForgotPassword -->
+    <s:div cssClass="ui grey horizontal divider" id="center_login">
+        ChangePassword
+    </s:div>
     <s:if test="hasActionErrors()">
-    	<div class="ui tall stacked center aligned segment" id="center_login">
-        	<s:actionerror/>
-    	</div>
+        <s:div cssClass="ui grey tall stacked center aligned segment" id="center_login">
+            <s:actionerror/>
+        </s:div>
 	</s:if>
-    <div class="ui tall stacked segment" id="center_login">
-        <form class="ui form" action="forgotPassword" method="post">
-            <div class="ui labeled input">
-                <div class="ui label">
+    <s:div cssClass="ui grey tall stacked segment" id="center_login">
+        <form class="ui grey form" action="forgotPassword" method="post">
+            <s:div cssClass="ui labeled input">
+                <s:div cssClass="ui label">
                     Email
-                </div>
-                <input type="text" placeholder="Email" name="email">
-            </div>
-            <div class="ui hidden divider"></div>
-            <button class="fluid ui blue button">Submit</button>
-            <div class="ui error message"></div>
+                </s:div>
+                <s:textfield placeholder="Enter Your Mail" name="user.email"/>
+            </s:div>
+            <s:div cssClass="ui hidden divider"/>
+            <s:submit cssClass="fluid ui teal basic button" value="Submit"/>
+            <s:div cssClass="ui error message"/>
         </form>
-    </div>
-  
-<!-- Body End-->
-</div>
+    </s:div>
 <!-- Footer-->
-<%@include file="includes/Footer.html"%>
+<%@include file="includes/Footer.jsp"%>
