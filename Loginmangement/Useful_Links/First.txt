@@ -1,1 +1,9 @@
 http://code.tutsplus.com/tutorials/how-to-load-in-and-animate-content-with-jquery--net-26
+http://stackoverflow.com/questions/19652259/how-to-iterate-list-based-on-first-element-of-list-using-struts-2-tags
+stackoverflow.com/questions/24955808/how-to-avoid-actionmessages-actionerror-generating-ul-li-tags
+http://www.journaldev.com/2266/struts2-ui-tags-example-tutorial
+http://stackoverflow.com/questions/4561179/how-to-disable-struts-2-table-generation-for-form
+https://struts.apache.org/docs/why-do-the-form-tags-put-table-tags-around-controls.html
+http://stackoverflow.com/questions/5752477/problem-with-html-tags-in-struts2-while-displaying
+http://stackoverflow.com/search?q=struts2&wb48617274=8D4DBADF
+http://www.mkyong.com/struts2/struts-2-a-tag-example/?wb48617274=0DB5A6AA
