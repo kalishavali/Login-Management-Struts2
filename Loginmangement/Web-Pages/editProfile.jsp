@@ -1,7 +1,7 @@
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@taglib prefix="s" uri="/struts-tags" %>
 <%@ page import="java.util.*" %>
-<%@include file="includes/Header_1.html"%>
+<%@include file="includes/Header_1.jsp"%>
 
 <div class="ui segment">
 <!-- Body Start-->
@@ -41,4 +41,4 @@
 <!-- Body End-->
 </div>
 <!-- Footer-->
-<%@include file="includes/Footer.html"%>
+<%@include file="includes/Footer.jsp"%>
