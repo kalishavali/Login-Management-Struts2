@@ -1,0 +1,167 @@
+-------------------Declaration-----------------
+create or replace package HEAD_PCKG_dashboard_AP is
+type REP_CURSOR is ref cursor;
+  PROCEDURE HEAD_CCRoads_PROC(  P_DID VARCHAR2,
+                    P_MID VARCHAR2,
+                   RET_CUR OUT REP_CURSOR);
+
+end HEAD_PCKG_dashboard_AP;
+
+--------------------Implementation----------------
+create or replace package body HEAD_PCKG_dashboard_AP  is
+
+PROCEDURE R_CategoryProgress(  P_DID VARCHAR2,
+                    P_MID VARCHAR2,
+                    P_PID VARCHAR2,
+                    P_TYPE VARCHAR2,
+                   RET_CUR OUT REP_CURSOR)
+ AS 
+BEGIN
+IF P_TYPE='-1'
+      THEN
+      OPEN RET_CUR FOR
+      select 'S.No', 
+             'Category', 
+            'Administratively Sanctioned',
+            '-5',
+            'In Progress',
+            '-5',
+            'Completed',
+            '-5',
+    '$',
+      'No Of Works',
+      'Unskilled (in Lakhs)',
+      'Material (in Lakhs)',
+      'Estimation Amount (in Lakhs)',
+      'Mandays (in Lakhs)',
+      'No Of Works',
+      'Unskilled Expenditure (in Lakhs)',
+      'Material (in Lakhs)',
+      'Total Expenditure (in Lakhs)',
+      'Mandays (in Lakhs)',
+      'No Of Works',
+      'Unskilled (in Lakhs)',
+      'Material (in Lakhs)',
+      'Total Expenditure (in Lakhs)',
+      'Mandays (in Lakhs)',
+      '$'
+          from headings_tg s ; 
+ELSIF P_DID='-1' AND P_MID='-1' AND P_PID='-1'
+      THEN
+      OPEN RET_CUR FOR
+      select 'S.No', 
+             'District', 
+            'Administratively Sanctioned',
+            '-5',
+            'In Progress',
+            '-5',
+            'Completed',
+            '-5',
+    '$',
+      'No Of Works',
+      'Unskilled (in Lakhs)',
+      'Material (in Lakhs)',
+      'Estimation Amount (in Lakhs)',
+      'Mandays (in Lakhs)',
+      'No Of Works',
+      'Unskilled Expenditure (in Lakhs)',
+      'Material (in Lakhs)',
+      'Total Expenditure (in Lakhs)',
+      'Mandays (in Lakhs)',
+      'No Of Works',
+      'Unskilled (in Lakhs)',
+      'Material (in Lakhs)',
+      'Total Expenditure (in Lakhs)',
+      'Mandays (in Lakhs)',
+      '$'
+          from headings_tg s ;  
+ELSIF P_DID<>'-1' AND P_MID='-1' 
+THEN
+    OPEN RET_CUR FOR
+    select 'S.No', 
+             'Mandal', 
+            'Administratively Sanctioned',
+            '-5',
+            'In Progress',
+            '-5',
+            'Completed',
+            '-5',
+    '$',
+      'No Of Works',
+      'Unskilled (in Lakhs)',
+      'Material (in Lakhs)',
+      'Estimation Amount (in Lakhs)',
+      'Mandays (in Lakhs)',
+      'No Of Works',
+      'Unskilled Expenditure (in Lakhs)',
+      'Material (in Lakhs)',
+      'Total Expenditure (in Lakhs)',
+      'Mandays (in Lakhs)',
+      'No Of Works',
+      'Unskilled (in Lakhs)',
+      'Material (in Lakhs)',
+      'Total Expenditure (in Lakhs)',
+      'Mandays (in Lakhs)',
+      '$'
+       from headings_tg s ;
+       
+ELSIF P_DID<>'-1' AND P_MID<>'-1' AND P_PID='-1'
+THEN
+    OPEN RET_CUR FOR
+    select 'S.No', 
+             'Panchayat', 
+            'Administratively Sanctioned',
+            '-5',
+            'In Progress',
+            '-5',
+            'Completed',
+            '-5',
+    '$',
+      'No Of Works',
+      'Unskilled (in Lakhs)',
+      'Material (in Lakhs)',
+      'Estimation Amount (in Lakhs)',
+      'Mandays (in Lakhs)',
+      'No Of Works',
+      'Unskilled Expenditure (in Lakhs)',
+      'Material (in Lakhs)',
+      'Total Expenditure (in Lakhs)',
+      'Mandays (in Lakhs)',
+      'No Of Works',
+      'Unskilled (in Lakhs)',
+      'Material (in Lakhs)',
+      'Total Expenditure (in Lakhs)',
+      'Mandays (in Lakhs)',
+      '$'
+       from headings_tg s ;
+ELSIF P_DID<>'-1' AND P_MID<>'-1' AND P_PID<>'-1'
+THEN
+    OPEN RET_CUR FOR
+    select 'S.No',
+           'Habitation Name',
+          'Work ID',
+            'Administratively Approved Date',
+            'Status Of the work',
+            'Estimation Details',
+            '-4',
+            'Expenditure Details',
+            '-4',
+            'Completion Date',
+    '$',
+      'Wage',
+      'Material',
+      'Total',
+      'ManDays',
+      'Wage',
+      'Material',
+      'Total',
+      'ManDays',
+      '$'
+       from headings_tg s ;
+     
+end if;
+END R_CategoryProgress; 
+
+end HEAD_PCKG_dashboard_AP;
+
+

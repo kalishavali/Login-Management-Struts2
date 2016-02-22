@@ -1,0 +1,166 @@
+public static ArrayList setDatawithStgProcCall(String ReportNo,String className,String methodName,String query,ArrayList inparmList) throws Exception
+{
+
+Connection lcon2=null;
+  Statement lstmt=null;
+    ResultSet lrs=null;
+  ArrayList DataList=new ArrayList();
+  CallableStatement cstmt = null;
+  
+	
+  try
+    {		    
+	  
+	  //String query="call sss_proc(?,?)";
+	  //String query="call R_PLANNING_REPORTS_13_4_PKG.SHELFLBR_13_4_4(?,?,?,?)";
+	  lcon2 = DBConnection.getConnection();
+	  lstmt = lcon2.createStatement(); 
+	  
+      String lStrQuery="insert into reports_usage_dtls(report_no,class_name,method_name,open_date)\n"+
+		"values ('"+ReportNo+"','"+className+"','"+methodName+"',SYSDATE)";
+     lstmt.executeUpdate(lStrQuery);
+   
+     cstmt = lcon2.prepareCall(query);  
+   
+	  if(inparmList.size()>0)
+	  {
+		  for(int i=0;i<inparmList.size();i++)
+		  {
+			  cstmt.setString(i+1,(String)inparmList.get(i));
+		  }
+		  cstmt.registerOutParameter(inparmList.size()+1,OracleTypes.CURSOR);
+		  cstmt.execute();
+		  lrs = (ResultSet)cstmt.getObject(inparmList.size()+1);
+	  }
+	  else
+	  { 
+		  cstmt.registerOutParameter(inparmList.size()+1,OracleTypes.CURSOR);
+		  cstmt.execute();
+		  lrs = (ResultSet)cstmt.getObject(inparmList.size()+1);
+	  }
+	 
+
+	  ResultSetMetaData rsMetaData=lrs.getMetaData();
+      int columnCount=rsMetaData.getColumnCount();
+      DecimalFormat frmt = new DecimalFormat("########,##,##,##0.00 ");
+      DecimalFormat frmt1 = new DecimalFormat("########,##,##,###");
+      while(lrs.next())
+          {
+              ArrayList alist=new ArrayList();
+              for(int loopCount=1;loopCount<=columnCount;loopCount++)
+              {
+	              if(rsMetaData.getColumnTypeName(loopCount).equalsIgnoreCase("Decimal"))
+	              {
+	                 alist.add(frmt.format(lrs.getFloat(loopCount)));
+	              }
+	              else if(rsMetaData.getColumnTypeName(loopCount).equalsIgnoreCase("float"))
+	              {
+	                 alist.add(frmt.format(lrs.getFloat(loopCount)));
+	              } 
+	              else  if(rsMetaData.getColumnTypeName(loopCount).equalsIgnoreCase("double"))
+	              {
+	                 alist.add(frmt.format(lrs.getFloat(loopCount)));
+	              }
+	              else if(rsMetaData.getColumnType(loopCount)==Types.NUMERIC){
+	            	  if(lrs!=null && lrs.getString(loopCount).startsWith(".")) {
+	            		  alist.add("0"+lrs.getString(loopCount));
+	            	  }
+	            	  else {
+	            		  alist.add(lrs.getString(loopCount));
+	            	  }
+	              }
+	              else if(rsMetaData.getColumnType(loopCount)==Types.INTEGER||rsMetaData.getColumnType(loopCount)==Types.BIGINT)
+	              {
+	                 alist.add(frmt1.format(lrs.getInt(loopCount)));
+	              }
+	              else if(rsMetaData.getColumnType(loopCount)==Types.BLOB||rsMetaData.getColumnType(loopCount)==Types.BLOB)
+	              {
+	            	  /*Blob blob =lrs.getBlob(loopCount);
+	            	  byte[] bdata = blob.getBytes(1, (int) blob.length());
+	            	  alist.add(new String(bdata));*/
+	            	  /*Blob blob = lrs.getBlob(loopCount); //blob of image from db
+	            	  StringBuffer strOut = new StringBuffer();
+	                  String aux;
+	                  BufferedReader br;
+
+	                  br = new BufferedReader(new InputStreamReader(blob.getBinaryStream()));
+	                  while ((aux=br.readLine())!=null) {
+	                      strOut.append(aux);
+	                  }
+	                  String offerPicStr = strOut.toString();
+	                  alist.add(offerPicStr);*/
+	            	  InputStream  is= lrs.getBinaryStream(loopCount);
+	            	  BufferedReader br = null;
+		          		StringBuilder sb = new StringBuilder();
+	
+		          		String line;
+		          		try {
+	
+		          			br = new BufferedReader(new InputStreamReader(is));
+		          			while ((line = br.readLine()) != null) {
+		          				sb.append(line);
+		          			}
+	
+		          		} catch (IOException e) {
+		          			e.printStackTrace();
+		          		} finally {
+		          			if (br != null) {
+		          				try {
+		          					br.close();
+		          				} catch (IOException e) {
+		          					e.printStackTrace();
+		          				}
+		          			}
+		          		}
+		          		alist.add(sb.toString());
+	              }
+	              
+	              else
+	              {
+	            	  
+	                 alist.add(lrs.getString(loopCount));
+	              }
+	               
+              }      
+              DataList.add(alist);
+           }
+         
+           
+      }    
+     catch(SQLException sqle)
+      {
+      //attribute.logger(did,mid,sqle,pid);
+    	 System.out.println("SQL Exception"+sqle);
+          sqle.printStackTrace();
+      }
+     catch(Exception lexp)
+     {
+          //attribute.logger(did,mid,lexp,pid);
+    	 System.out.println("Exception"+lexp);
+          lexp.printStackTrace();
+     }
+     finally
+      {  
+    	 			
+                     if(lrs!=null)
+                     {
+                        DBConnection.closeResultSet(lrs);
+                        lrs=null;
+                     }
+                     if(lstmt!=null)
+                     {
+                         DBConnection.closeStatement(lstmt);
+                         lstmt=null;
+                     }
+                     /*if(lcon2!=null)
+                     {
+                         DBConnection.closeConnection(lcon2);
+                         lcon2=null;         
+                     }*/
+             
+                     DBConnection.closeConnection(lcon2);
+                     lcon2=null;   
+       }
+                   
+        return DataList;
+}
