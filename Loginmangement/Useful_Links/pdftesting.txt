@@ -1,0 +1,135 @@
+package Testing;
+
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.util.ArrayList;
+import java.util.Arrays;
+
+import com.itextpdf.text.BaseColor;
+import com.itextpdf.text.Chunk;
+import com.itextpdf.text.Document;
+import com.itextpdf.text.DocumentException;
+import com.itextpdf.text.Font;
+import com.itextpdf.text.FontFactory;
+import com.itextpdf.text.Paragraph;
+import com.itextpdf.text.Phrase;
+import com.itextpdf.text.Element;
+import com.itextpdf.text.TabSettings;
+import com.itextpdf.text.TabStop.Alignment;
+import com.itextpdf.text.pdf.PdfPCell;
+import com.itextpdf.text.pdf.PdfPTable;
+import com.itextpdf.text.pdf.PdfWriter;
+import com.itextpdf.text.pdf.draw.DottedLineSeparator;
+
+
+public class PDFTesting {
+	public static void main(String[] args) {
+		Document document=new Document();
+		Font font=FontFactory.getFont("Fonts/Quattrocento-Regular.ttf",7);
+		Font font1=FontFactory.getFont("Fonts/Quattrocento-Regular.ttf",7,font.BOLD|font.UNDERLINE);
+		Font font2=FontFactory.getFont("Fonts/Quattrocento-Regular.ttf",7,font.BOLD);
+    	try{
+    	
+    		//Two Header
+    		ArrayList<String> data1=new ArrayList<String>(Arrays.asList("xyz", "abc"));
+    		
+    		
+    		ArrayList<String> data=new ArrayList<String>();
+    		data.add("S.No");
+    		data.add("No of Labour Reported Today");
+    		data.add("third");
+    		data.add("Expenditure on 21-Feb-2016");
+    		data.add("-2");
+    		data.add("Expenditure during 2015-16");
+    		data.add("-3");
+    		data.add("Material EntitleMent");
+    		data.add("Balance Material Availability");
+    		data.add("wage");
+    		data.add("material");
+    		data.add("wage");
+    		data.add("material");
+    		data.add("total");
+    		
+    		int size=0;
+    		for(int i=0;i<data.size();i++){
+    			if(data.get(i).startsWith("-")){
+    				size=size+Integer.parseInt(data.get(i).substring(1));
+    			}
+    		}
+    		size=data.size()-size;
+    		//PDF Creating
+    		PdfWriter.getInstance(document, new FileOutputStream("Testing.pdf"));
+    		PdfPTable table=new PdfPTable(size+1);
+    		PdfPCell cell;
+			
+    		for(int i=0;i<data.size();i++){
+    			if(i<size){
+	    			if(data.get(i+1).startsWith("-")){
+	    				cell=new PdfPCell(new Phrase(data.get(i),font));
+	    				cell.setColspan(Integer.parseInt(data.get(i+1).substring(1)));
+	    				cell.setBackgroundColor(BaseColor.LIGHT_GRAY);
+	    				cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+	        			table.addCell(cell);
+	        			i=i+1;
+	        		}
+	    			else{
+	    				cell=new PdfPCell(new Phrase(data.get(i),font));
+	    				cell.setRowspan(2);
+	    				cell.setBackgroundColor(BaseColor.LIGHT_GRAY);
+	    				cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+	    				table.addCell(cell);
+	    			}
+    			}
+    			else{
+    				cell=new PdfPCell(new Phrase(data.get(i),font));
+    				cell.setBackgroundColor(BaseColor.LIGHT_GRAY);
+    				cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+    				table.addCell(cell);
+    			}
+    		}
+    		table.setHeaderRows(2);
+    		for(int i=0;i<10;i++){
+    			cell=new PdfPCell(new Phrase("one",font));
+    			cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+	    		table.addCell(cell);
+    		}
+    		
+    		
+    		document.open();
+    		Paragraph reportName=new Paragraph("R.3Daily Progress repot as Labour and Expenditure details",font1);
+    		reportName.setAlignment(Element.ALIGN_CENTER);
+    		document.add(reportName);
+    		
+    		Paragraph reportDate=new Paragraph("Reprot as on Date: 03-Feb-2016",font2);
+    		reportDate.setSpacingBefore(8f);
+    		reportDate.setAlignment(Element.ALIGN_CENTER);
+    		document.add(reportDate);
+    		
+    		Paragraph p=new Paragraph();
+    		p = new Paragraph();
+            p.add(new Chunk("District: Guntur",font2));
+            p.add(Chunk.TABBING);
+            p.add(new Chunk("Mandal: Nadendla",font2));
+            p.add(Chunk.TABBING);
+            p.add(new Chunk("Panchayat: Chilakaluripet",font2));
+    		p.setAlignment(Element.ALIGN_CENTER);
+    		document.add(p);
+    		
+    		DottedLineSeparator separator = new DottedLineSeparator();
+            separator.setPercentage(59100f / 523f);
+            Chunk linebreak = new Chunk(separator);
+            
+            document.add(linebreak);
+    		document.add(table);
+    		document.close();
+    		
+    	}
+    	catch(DocumentException e){
+    		e.printStackTrace();
+    	}
+    	catch(FileNotFoundException e){
+    		e.printStackTrace();
+    	}
+    }
+
+}
