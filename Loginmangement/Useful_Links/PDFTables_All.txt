@@ -1,99 +1,110 @@
-package Testing;
+package authentication;
 
+import java.io.ByteArrayOutputStream;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.Map;
+
+import javax.servlet.ServletOutputStream;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.apache.struts2.ServletActionContext;
+import org.apache.struts2.interceptor.SessionAware;
+
+import Testing.Database_Access;
 
 import com.itextpdf.text.BaseColor;
 import com.itextpdf.text.Chunk;
 import com.itextpdf.text.Document;
 import com.itextpdf.text.DocumentException;
+import com.itextpdf.text.Element;
 import com.itextpdf.text.Font;
 import com.itextpdf.text.FontFactory;
 import com.itextpdf.text.Paragraph;
 import com.itextpdf.text.Phrase;
-import com.itextpdf.text.Element;
 import com.itextpdf.text.pdf.PdfPCell;
 import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfWriter;
 import com.itextpdf.text.pdf.draw.DottedLineSeparator;
+import com.opensymphony.xwork2.ActionSupport;
 
-
-public class ThreeHeader {
-	public static void main(String[] args) {
-		Document document=new Document();
-		Font font=FontFactory.getFont("Fonts/Quattrocento-Regular.ttf",7);
-		Font font1=FontFactory.getFont("Fonts/Quattrocento-Regular.ttf",7,font.BOLD|font.UNDERLINE);
-		Font font2=FontFactory.getFont("Fonts/Quattrocento-Regular.ttf",7,font.BOLD);
-    	try{
-    		//Two Header
-    		ArrayList resultList=new ArrayList();
-    		ArrayList subList=new ArrayList();
-    		ArrayList list=new ArrayList();
-    		resultList.add("R.3Daily Progress repot as Labour and Expenditure details");
-    		resultList.add("1");
-    		list.add("2015-2016");
-    		list.add("02");
-    		list.add("February");
-    		list.add("State");
-    		list.add("Andhra Pradesh");
-    		resultList.add(list);
-    		//Headings
-    		list=new ArrayList();
-    		list.add("S.No");
-    		list.add("Name of the District");
-    		list.add("Expenditure on 21-Feb-2016 (Rs.in lakhs)");
-    		list.add("Expenditure during 2015-16 FY (Rs.in lakhs)");
-    		subList.add(list);
-    		//Headings_2
-    		/*list=new ArrayList();
-    		list.add("Wage");
-    		list.add("-2");
-    		list.add("Wage");
-    		list.add("-2");
-    		list.add("Total");
-    		list.add("-2");
-    		subList.add(list);*/
-    		//Headings_3
-    		/*list=new ArrayList();
-    		list.add("Wage");
-    		list.add("Material");
-    		list.add("Wage");
-    		list.add("Material");
-    		list.add("Total");
-    		subList.add(list);*/
-    		resultList.add(subList);
-    		//Data
-    		subList=new ArrayList();
-    		list=new ArrayList();
-    		list.add("12");
-    		list.add("Anantapur");
-    		list.add("40");
-    		list.add("300.63");
-    		subList.add(list);
-    		list=new ArrayList();
-    		list.add("04");
-    		list.add("East Godavari");
-    		list.add("44");
-    		list.add("248.64");
-    		subList.add(list);
-    		resultList.add(subList);
-    		
-    		ArrayList headingsList=(ArrayList) resultList.get(3);
-    		ArrayList dataList=(ArrayList) resultList.get(4);
+public class Testing_Action extends ActionSupport implements SessionAware{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	HttpServletResponse response=ServletActionContext.getResponse();
+	HttpServletRequest request=ServletActionContext.getRequest();
+	Document document = new Document();
+		ByteArrayOutputStream baos = new ByteArrayOutputStream();
+		
+	  public void exportToPdf() { // no return type
+	    try {
+	    	PdfWriter.getInstance(document, baos);
+	    	document.open();
+	    	
+	        Font font=FontFactory.getFont(request.getSession().getServletContext()+"/Fonts/Quattrocento-Regular.ttf",7);
+			Font font1=FontFactory.getFont("Fonts/Quattrocento-Regular.ttf",7,font.BOLD|font.UNDERLINE);
+			Font font2=FontFactory.getFont("Fonts/Quattrocento-Regular.ttf",7,font.BOLD);
+			ArrayList headingsList=Database_Access.getHeadings();
+    		ArrayList dataList=Database_Access.getDataList();
+    		ArrayList<String> commonDataList=Database_Access.getCommonDataList();
+    		String reportName=Database_Access.getReportName();
     		ArrayList<String> temp=null;
-    		int rowSpan=headingsList.size();
+    		
+	        
+	        
+	        
+	        int rowSpan=headingsList.size();
     		int columnCount=0;
-    		ArrayList<String> headingTable=(ArrayList<String>)((ArrayList)resultList.get(3)).get(0);
+    		ArrayList<String> headingTable=(ArrayList<String>)headingsList.get(0);
+    		//ArrayList<String> headingTable=(ArrayList<String>)((ArrayList)resultList.get(3)).get(0);
     		for(int i=0;i<headingTable.size();i++){
     			String element=headingTable.get(i);
     			if(headingTable.get(i).startsWith("-")){
     				columnCount=columnCount+Integer.parseInt(headingTable.get(i).substring(1))-1;
+    			}
+    			else if(headingTable.get(i).startsWith("+")){
+    				//Nothing
     			}else{
     				columnCount=columnCount+1;
     			}
     		}
-    		PdfWriter.getInstance(document, new FileOutputStream("Three.pdf"));
+    		
+    		//Report Name
+    		Paragraph p1=new Paragraph();
+    		p1.add(new Chunk(reportName,font1));
+    		p1.setAlignment(Element.ALIGN_CENTER);
+    		
+    		//Report as on Date
+    		SimpleDateFormat sdf = new SimpleDateFormat("dd-MMM-yyyy");
+        	String date = sdf.format(new Date()); 
+    		Paragraph p2=new Paragraph();
+    		p2.add(new Chunk("Report as on Date : ",font2));
+    		p2.add(new Chunk(date,font));
+    		p2.setSpacingBefore(8f);
+    		p2.setAlignment(Element.ALIGN_CENTER);
+    		
+    		//District,Mandal,Panchayat Data
+    		Paragraph p3=new Paragraph();
+    		p3.setAlignment(Element.ALIGN_LEFT);
+	    	for(int i = 3; i < commonDataList.size(); i++){
+	    		String ele=commonDataList.get(i);
+	    		p3.add(new Chunk(commonDataList.get(i)+" : " ,font2));
+	    		p3.add(new Chunk(commonDataList.get(i+1),font));
+	    		p3.add(Chunk.TABBING);
+		        i=i+1;
+	    	}
+    		
+    		//Separator
+    		DottedLineSeparator separator = new DottedLineSeparator();
+            separator.setPercentage(59100f / 523f);
+            Chunk linebreak = new Chunk(separator);
+            
+            //Headings
     		PdfPTable table=new PdfPTable(columnCount);
     		PdfPCell cell;
     		for(int i=0;i<headingsList.size();i++){
@@ -107,6 +118,14 @@ public class ThreeHeader {
 			    				cell.setHorizontalAlignment(Element.ALIGN_CENTER);
 			        			table.addCell(cell);
 			        			j=j+1;
+			    		}
+			    		else if(j!=temp.size()-1 && temp.get(j+1).startsWith("+")){
+		    				cell=new PdfPCell(new Phrase(temp.get(j),font));
+		    				cell.setRowspan(Integer.parseInt(temp.get(j+1).substring(1)));
+		    				cell.setBackgroundColor(BaseColor.LIGHT_GRAY);
+		    				cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+		        			table.addCell(cell);
+		        			j=j+1;
 			    		}
 			    		else if(i==headingsList.size()-1){
 			    			cell=new PdfPCell(new Phrase(temp.get(j),font));
@@ -124,6 +143,7 @@ public class ThreeHeader {
     				}
     		}
     		table.setHeaderRows(rowSpan);
+    		
     		//Data
     		temp=new ArrayList<String>();
     		for(int i = 0; i < dataList.size(); i++){
@@ -132,54 +152,48 @@ public class ThreeHeader {
     			cell=new PdfPCell(new Phrase(num,font));
     			cell.setHorizontalAlignment(Element.ALIGN_CENTER);
 	    		table.addCell(cell);
-    			for(int j = 1; j <temp.size(); j++){
-    				cell=new PdfPCell(new Phrase(temp.get(j),font));
-        			cell.setHorizontalAlignment(Element.ALIGN_CENTER);
-    	    		table.addCell(cell);  
+	    		
+    			for(int j = 1; j <columnCount; j++){
+    				if(j<temp.size()){
+	    				cell=new PdfPCell(new Phrase(temp.get(j),font));
+	        			cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+	    	    		table.addCell(cell);  
+    				}
+    				else{
+    					cell=new PdfPCell(new Phrase("  ",font));
+	        			cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+	    	    		table.addCell(cell);
+    				}
     		    }
     		}
-    		document.open();
-    		Paragraph reportName=new Paragraph((String)resultList.get(0),font1);
-    		reportName.setAlignment(Element.ALIGN_CENTER);
-    		document.add(reportName);
-    		
-    		Paragraph reportDate=new Paragraph();
-    		reportDate.add(new Chunk("Report as on Date : ",font2));
-    		reportDate.add(new Chunk("03-Feb-2016",font));
-    		reportDate.setSpacingBefore(8f);
-    		reportDate.setAlignment(Element.ALIGN_CENTER);
-    		document.add(reportDate);
-    		
-    		Paragraph commonData=new Paragraph();
-    		commonData = new Paragraph();
-    		commonData.add(new Chunk("District : ",font2));
-    		commonData.add(new Chunk("Guntur",font));
-    		commonData.add(Chunk.TABBING);
-    		commonData.add(new Chunk("Mandal : ",font2));
-    		commonData.add(new Chunk("Nadendla",font));
-    		commonData.add(Chunk.TABBING);
-    		commonData.add(new Chunk("Panchayat : ",font2));
-    		commonData.add(new Chunk("Chilakaluripet",font));
-    		commonData.setAlignment(Element.ALIGN_CENTER);
-    		document.add(commonData);
-    		
-    		DottedLineSeparator separator = new DottedLineSeparator();
-            separator.setPercentage(59100f / 523f);
-            Chunk linebreak = new Chunk(separator);
-            
+    		document.add(p1);
+    		document.add(p2);
+    		document.add(p3);
             document.add(linebreak);
     		document.add(table);
-    		document.close();
-    		
-    	}
-    	catch(DocumentException e){
+	        document.close(); 
+	        ServletOutputStream outputStream = response.getOutputStream() ; 
+	        baos.writeTo(outputStream); 
+	        response.setHeader("Content-Disposition", "attachment; filename=\"sample.pdf\""); 
+	        response.setContentType("application/pdf"); 
+	        outputStream.flush(); 
+	        outputStream.close(); 
+	    }
+	    catch(DocumentException e){
+	    	baos.reset();
     		e.printStackTrace();
     	}
     	catch(FileNotFoundException e){
     		e.printStackTrace();
     	}
-    	System.out.println("Docuemnt Created");
-    }
+    	catch(Exception e){
+    		e.printStackTrace();
+    	}
 
-}
+	  }
 
+	@Override
+	public void setSession(Map<String, Object> sessionMap) {
+        
+    } 
+	}
